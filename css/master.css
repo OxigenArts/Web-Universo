@@ -227,7 +227,7 @@ i.color {
     max-width: 100%;
 }
 
-.post article::first-letter {
+.post article p:first-child::first-letter {
     float: left;
     font-weight: bold;
     color: black;
