@@ -17,6 +17,17 @@ main {
     box-sizing: border-box;
 }
 
+.container.ad {
+    padding: 0;
+    margin: 15px auto;
+}
+
+.container.ad img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
 .container.page {
     background-color: #fff;
     border-radius: 4px;
@@ -43,10 +54,16 @@ main {
 /*---- Buttons ----*/
 
 .btn.btn-primary {
-    background: linear-gradient(to right, #49BEEE, #1956A0) !important;
+    background: linear-gradient(to right, #49BEEE, #1956A0);
     border: 0;
     font-weight: 600;
     padding: .375rem 2rem;
+    transition: all 0.1s ease !important;
+    box-shadow: none !important;
+}
+
+.btn.btn-primary:active {
+    background: linear-gradient(to right, rgb(46, 142, 177), rgb(15, 69, 126)) !important;
 }
 
 
@@ -113,26 +130,44 @@ main {
     padding: 10px;
 }
 
-.container.sidebar h1,
-.container.sidebar h2,
-.container.sidebar h3,
 .container.sidebar h4 {
     font-family: 'Montserrat', sans-serif;
     text-transform: uppercase;
     font-weight: 600;
+    font-size: 1.3em;
 }
 
 .container.sidebar i {
-    font-size: 0.8em !important;
-    color: #1956A0 !important;
+    font-size: 0.8em;
+    color: #1956A0;
     background: linear-gradient(to right, #49BEEE, #1956A0);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    display: inline-block;
 }
 
 .container.sidebar img {
     width: 100%;
     border-radius: 2px;
+}
+
+.sidebar-post i {
+    margin-top: -2px;
+    vertical-align: top;
+    font-size: 2em !important;
+    -webkit-text-fill-color: rgb(32, 32, 32) !important;
+    display: inline-block !important;
+}
+
+.sidebar-post p {
+    font-size: 1.2em;
+    display: inline-block !important;
+    width: 85%;
+}
+
+.sidebar-post a {
+    color: inherit !important;
+    text-decoration: none !important;
 }
 
 
