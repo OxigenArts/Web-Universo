@@ -4,6 +4,8 @@ add_theme_support( 'post-thumbnails' );
 
 
 //Popular Views
+
+
 function setPostViews($postID) {
     $countKey = 'post_views_count';
     $count = get_post_meta($postID, $countKey, true);
@@ -33,7 +35,13 @@ function setPostViews($postID) {
 
 
 
+function add_theme_menu_item()
+{
+	add_menu_page("Universo", "Universo", "manage_options", "theme-panel", "theme_settings_page", null, 20);
+	add_submenu_page("theme-panel", "Encuestas","Encuestas", "manage_options", "theme-encuentas", "theme_encuestas_page");
+}
 
+add_action( 'admin_menu', 'adjust_the_wp_menu', 999 );
 register_nav_menus( array(
     'primary' => __( 'Primary Menu', 'THEMENAME' ),
 ) );
@@ -127,8 +135,39 @@ if ( is_admin() ) {
 
     add_action('admin_head', 'change_form_enc');
 }
+function display_encuesta_opciones()
+{
+	?>
+	<script type="text/javascript">
+		var count = 3;
+ 		jQuery(document).ready(function() {
+		    var max_fields      = 10; //maximum input boxes allowed
+		    var wrapper         = jQuery(".campos_add"); //Fields wrapper
+		    var add_button      = jQuery(".add_field_button"); //Add button ID
+		   
+		    var x = 1; //initlal text box count
+		    jQuery(add_button).click(function(e){ //on add input button click
+		        e.preventDefault();
+		        if(x < max_fields){ //max input box allowed
+		            x++; //text box increment
+		            jQuery(wrapper).append('<div><input style="width:100%" type="text" placeholder="'+count+'º opción" name="encuesta_opciones['+(count-1)+']"/></div>'); //add input box
+		            count++;
+		        }
+		    });
+		});
+ 	</script>
+ 	<div  class="campos_add">
+ 		
+	    <div><input style="width:100%" type="text" placeholder="1º opción" name="encuesta_opciones[0]"></div>
+	    <div><input style="width:100%" type="text" placeholder="2º opción" name="encuesta_opciones[1]"></div>
+	</div>
+	<div align="center"><button class="add_field_button">Agregar</button></div>
+	<?php
+}
 function display_theme_panel_fields()
 {
+	//Universo Menu
+
 	//Social Options
 	add_settings_section("section", "Redes Sociales", null, "social-options");
 	
@@ -145,7 +184,7 @@ function display_theme_panel_fields()
 	add_settings_section("section", "Pie de pagina", null, "footer-options");
 
     add_settings_field("footer_about", 'Texto "Acerca de Universo"', "display_footer_about", "footer-options", "section");
- 	add_settings_field("custom_flogo", "Usar otro logo?", "display_custom_flogo_element", "footer-options", "section");
+ 	add_settings_field("custom_flogo", "¿Usar otro logo?", "display_custom_flogo_element", "footer-options", "section");
     add_settings_field("flogo", "Logo", "flogo_display", "footer-options", "section");  
     
     register_setting("section", "footer_about");
@@ -156,16 +195,42 @@ function display_theme_panel_fields()
     //Home Options
 	add_settings_section("section", "Pagina principal", null, "home-options");
  	
- 	add_settings_field("custom_logo", "Usar otro logo?", "display_custom_logo_element", "home-options", "section");
+ 	add_settings_field("custom_logo", "¿Usar otro logo?", "display_custom_logo_element", "home-options", "section");
    	add_settings_field("logo", "Logo", "logo_display", "home-options", "section");  
    
     register_setting("section", "custom_logo");
     register_setting("section", "logo", "handle_logo_upload");
 
+    //Encuestas Menu
+
+    add_settings_section("section", "Nueva Encuesta", null, "encuestas-options");
+ 	add_settings_field("encuesta_opciones", "Opciones:", "display_encuesta_opciones", "encuestas-options", "section");
+
+    register_setting("section", "encuesta_opciones");
+
 }
 
 add_action("admin_init", "display_theme_panel_fields");
 
+function theme_encuestas_page(){
+	?>
+	<form method="post" action="options.php">
+		<?php
+	$datos = get_option('encuesta_opciones');
+	if(is_array($datos) || is_object($datos)){
+		foreach ($datos as $key => $value) {
+	 	?>
+	 		<h1><?php echo $key+1; ?>º Opción: <?php echo $value?></h1>
+	 	<?php
+	 	}
+	}
+ 	settings_fields("section");
+	do_settings_sections("encuestas-options");
+	submit_button(); 
+	?>
+	</form>
+		<?php
+}
 
 function theme_settings_page()
 {
@@ -202,18 +267,12 @@ function remove_menus(){
 add_action( 'admin_menu', 'remove_menus' );
 
 
-function add_theme_menu_item()
-{
-	add_menu_page("Universo", "Universo", "manage_options", "theme-panel", "theme_settings_page", null, 20);
 
-}
-add_action( 'admin_menu', 'adjust_the_wp_menu', 999 );
 function adjust_the_wp_menu() {
 	remove_submenu_page( 'options-general.php', 'options-discussion.php');
 	remove_submenu_page( 'options-general.php', 'options-media.php');
 	remove_submenu_page( 'options-general.php', 'options-permalink.php');
 }
-
 add_action("admin_menu", "add_theme_menu_item");
 
 
