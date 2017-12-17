@@ -82,7 +82,6 @@ function flogo_display()
 
 function handle_logo_upload()
 {
-
 	if(!empty($_FILES["logo"]["tmp_name"]))
 	{
 		$urls = wp_handle_upload($_FILES["logo"], array('test_form' => FALSE));
@@ -100,7 +99,6 @@ function display_custom_logo_element()
 }
 function handle_flogo_upload()
 {
-
 	if(!empty($_FILES["flogo"]["tmp_name"]))
 	{
 		$urls = wp_handle_upload($_FILES["flogo"], array('test_form' => FALSE));
@@ -199,6 +197,7 @@ function remove_menus(){
   remove_menu_page( 'plugins.php' );                //Plugins
   remove_menu_page( 'tools.php' );                //Plugins
   remove_menu_page( 'upload.php' );   
+  remove_menu_page( 'edit-tags.php?taxonomy=post_tag' );
 }
 add_action( 'admin_menu', 'remove_menus' );
 
@@ -271,22 +270,62 @@ function guardar_metabox_autores( $post_id )
 
 //Admin bar 
 
-function myplugin_customize_toolbar( $wp_admin_bar ){
-	$user = wp_get_current_user();
-	if ( ! ( $user instanceof WP_User ) ){
-		return;
-	}
-	$my_account = $wp_admin_bar->get_node( 'my-account' );
-	if( ! empty( $user->user_url ) && $my_account ){
-		$wp_admin_bar->add_node( array(
-			'parent'		=> 'user-actions',
-			'id'		=> 'user-url',
-			'title'		=> '<span class="user-url">' . __( 'My Website' ) . '</span>',
-			'href'		=> esc_url( $user->user_url )
-		) );
-	}
+function webriti_remove_admin_bar_links() {
+global $wp_admin_bar;
+
+//Remove WordPress Logo Menu Items
+$wp_admin_bar->remove_menu('wp-logo'); // Removes WP Logo and submenus completely, to remove individual items, use the below mentioned codes
+$wp_admin_bar->remove_menu('themes'); // 'Themes'
+$wp_admin_bar->remove_menu('widgets'); // 'Widgets'
+$wp_admin_bar->remove_menu('menus'); // 'Menus'
+
+// Remove Comments Bubble
+$wp_admin_bar->remove_menu('comments');
+// Remove Comments Bubble
+$wp_admin_bar->remove_menu('customize');
+//Remove Update Link if theme/plugin/core updates are available
+$wp_admin_bar->remove_menu('updates');
+
+$wp_admin_bar->remove_menu('new-content'); // Removes '+ New' and submenus completely, to remove individual items, use the below mentioned codes
+
+
+// Remove 'Howdy, username' Menu Items
+$wp_admin_bar->remove_menu('user-info'); // 'username'
+$wp_admin_bar->remove_menu('edit-profile'); // 'Edit My Profile'
+
 }
-add_action( 'admin_bar_menu', 'myplugin_customize_toolbar', 999 );
+add_action( 'wp_before_admin_bar_render', 'webriti_remove_admin_bar_links' );
 
 
+function replace_howdy( $wp_admin_bar ) {
+$my_account=$wp_admin_bar->get_node('my-account');
+$newtitle = str_replace( 'Hola,', '', $my_account->title );
+$wp_admin_bar->add_node( array(
+'id' => 'my-account',
+'title' => $newtitle,
+) );
+}
+add_filter( 'admin_bar_menu', 'replace_howdy',25 );
+
+
+
+
+function webriti_toolbar_link($wp_admin_bar) {
+$args = array(
+'title' => 'Nueva Entrada',
+'href' => get_site_url().'/wp-admin/post-new.php'
+);
+$wp_admin_bar->add_node($args);
+$args = array(
+'title' => 'Nueva Pagina',
+'href' => get_site_url().'/wp-admin/post-new.php?post_type=page'
+);
+$wp_admin_bar->add_node($args);
+$args = array(
+'title' => 'Configurar Tema',
+'href' => get_site_url().'/wp-admin/admin.php?page=theme-panel'
+);
+$wp_admin_bar->add_node($args);
+}
+add_action('admin_bar_menu', 'webriti_toolbar_link', 50);
 ?>

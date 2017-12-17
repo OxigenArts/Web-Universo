@@ -66,7 +66,6 @@ body {
     padding-top: 54px;
     background-color: #e8e8e8 !important;
 }
-
 main {
     padding: 0 15px;
     box-sizing: border-box;
@@ -356,4 +355,8 @@ footer {
     .carousel-item {
         height: 500px;
     }
+}
+
+.wp-admin-bar-wp-logo{
+    display: none!important;
 }

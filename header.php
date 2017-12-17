@@ -14,24 +14,29 @@
     <link rel="stylesheet" type="text/css" href="<?php echo get_bloginfo('template_directory'); ?>/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
+
+    <?php
+    if(is_user_logged_in()){
+        ?>
+            <style>
+                .navbar{
+                        top:30px;
+                    }
+                @media screen and (max-width: 782px){
+                    
+                    .navbar{
+                        top:46px;
+                    }
+                }
+            </style>
+        <?php
+    }?>
     <?php wp_head();?>
 </head>
 
 <body>
-    <?php
-    if(is_user_logged_in()){
-        ?>
-            <nav style="top:30px;" class="navbar navbar-expand-md navbar-dark fixed-top bg-dgray">
-        <?php
-    }
-    else{
-        ?>
-            <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dgray">
-        <?php
-    }
 
-    ?>
-    
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dgray">
         <div class="container-fluid">
             <a class="navbar-brand" href="<?php echo get_bloginfo( 'wpurl' );?>">
                 <?php
