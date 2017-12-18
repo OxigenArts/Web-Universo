@@ -40,7 +40,7 @@
 			?>
 				<div class="sidebar-post">
 	                <a href="<?php the_permalink(); ?>">
-	                    <img src="<?php the_post_thumbnail_url('large');?>" class="mb-2">
+	                    <img src="<?php the_post_thumbnail_url('category-img');?>" class="mb-2">
 	                    <i class="fa fa-caret-right"></i>
 	                    <p><?php the_title(); ?></p>
 	                </a>

@@ -12,7 +12,7 @@
                 <h1><?php the_title(); ?></h1>
                 <p class="text-muted mb-2"><?php echo get_the_date('l j \d\e F',$post->I);?></p>
             </div>
-            <img class="title-img" src="<?php the_post_thumbnail_url('large');?>" alt="">
+            <img class="title-img" src="<?php the_post_thumbnail_url('post-img');?>" alt="">
 
             <div class="autor px-p">
                 <div class="row text-center">

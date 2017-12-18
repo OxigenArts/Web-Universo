@@ -19,6 +19,14 @@ function setPostViews($postID) {
     }
 }
 
+
+//Image sizes
+
+add_image_size( 'home-img', 340, 340,array( 'center', 'center') );
+add_image_size( 'category-img', 540, 300,array( 'center', 'center') );
+add_image_size( 'post-img', 850, 450,true);
+add_image_size( 'slider-img', 1024, 1024);
+
 //Theme settings
 
 
@@ -39,7 +47,12 @@ function add_theme_menu_item()
 {
 	add_menu_page("Universo", "Universo", "manage_options", "theme-panel", "theme_settings_page", null, 20);
 	add_submenu_page("theme-panel", "Encuestas","Encuestas", "manage_options", "theme-encuentas", "theme_encuestas_page");
-	add_submenu_page(null, "Desarrollador","Desarrollador", "manage_options", "devel", "theme_devel");
+	$menuParent = null;
+	if(get_option("devel_mode") == "1"){
+		$menuParent = "theme-panel";
+	}
+
+	add_submenu_page($menuParent, "Desarrollador","Desarrollador", "manage_options", "devel", "theme_devel");
 }
 
 register_nav_menus( array(

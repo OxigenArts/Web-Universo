@@ -329,6 +329,8 @@ footer a:link,footer a:visited{
 .title-content{
     text-align: center;
     color:#fff;
+    text-shadow: 0 0 10px #000!important;
+
 }
 .title-content .text{
     text-transform: uppercase;
@@ -368,6 +370,8 @@ footer a:link,footer a:visited{
    margin:4px 10px;
    background-color: #fff;
    display: inline-block;
+    box-shadow: 0 0 10px #000!important;
+
 }
 .corto{
     top:38%;
