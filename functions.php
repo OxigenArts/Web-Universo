@@ -42,7 +42,6 @@ function add_theme_menu_item()
 	add_submenu_page(null, "Desarrollador","Desarrollador", "manage_options", "devel", "theme_devel");
 }
 
-add_action( 'admin_menu', 'adjust_the_wp_menu', 999 );
 register_nav_menus( array(
     'primary' => __( 'Primary Menu', 'THEMENAME' ),
 ) );
@@ -417,6 +416,8 @@ function webriti_toolbar_link($wp_admin_bar) {
 
 $devel_mode = get_option("devel_mode");
 if($devel_mode != "1"){
+	
+add_action( 'admin_menu', 'adjust_the_wp_menu', 999 );
 	add_action( 'admin_menu', 'remove_menus' );
 	add_action( 'wp_before_admin_bar_render', 'webriti_remove_admin_bar_links' );
 	add_filter( 'admin_bar_menu', 'replace_howdy',25 );
