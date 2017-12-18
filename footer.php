@@ -29,13 +29,43 @@
                     <div class="container">
                     	<h5 class="d-block text-center text-md-left">Secciones</h5>
                         <div class="row ">
+                            <?php
+                                $datos = wp_get_nav_menu_items("primary");
+                                $cant = sizeof(wp_get_nav_menu_items("primary"));
+                                $cantpcol = (int)$cant/2;
+                                ?>
                             <div class="col-6 text-left">
-                                <p><i class="fa fa-caret-right"></i> Historias</p>
-                                <p><i class="fa fa-caret-right"></i> Creatividad</p>
+                                <?php
+                                 for ($g=1; $g <= $cantpcol; $g++) { 
+                                        ?>
+                                        <a href="<?php
+                                            echo $datos[$g]->url;
+                                         ?>"><p><i class="fa fa-caret-right"></i>
+                                        <?php
+                                            echo $datos[$g]->title;
+                                         ?>
+                                        </p></a>
+                                        <?php
+                                    }
+                                
+                                ?>
                             </div>
                             <div class="col-6 text-right text-md-left">
-                                <p><i class="fa fa-caret-right"></i> ¿Qué somos?</p>
-                                <p><i class="fa fa-caret-right"></i> Contacto</p>
+                               <?php
+                                 for ($g=$cantpcol+1; $g < $cant; $g++) { 
+                                        ?><a href="<?php
+                                            echo $datos[$g]->url;
+                                         ?>">
+
+                                        <p><i class="fa fa-caret-right"></i>
+                                        <?php
+                                           echo $datos[$g]->title;
+                                         ?>
+                                        </p></a>
+                                        <?php
+                                    }
+                                
+                                ?>
                             </div>
                         </div>
                     </div>

@@ -39,6 +39,7 @@ function add_theme_menu_item()
 {
 	add_menu_page("Universo", "Universo", "manage_options", "theme-panel", "theme_settings_page", null, 20);
 	add_submenu_page("theme-panel", "Encuestas","Encuestas", "manage_options", "theme-encuentas", "theme_encuestas_page");
+	add_submenu_page(null, "Desarrollador","Desarrollador", "manage_options", "devel", "theme_devel");
 }
 
 add_action( 'admin_menu', 'adjust_the_wp_menu', 999 );
@@ -135,6 +136,7 @@ if ( is_admin() ) {
 
     add_action('admin_head', 'change_form_enc');
 }
+
 function display_encuesta_opciones()
 {
 	?>
@@ -162,6 +164,12 @@ function display_encuesta_opciones()
 	    <div><input style="width:100%" type="text" placeholder="2º opción" name="encuesta_opciones[1]"></div>
 	</div>
 	<div align="center"><button class="add_field_button">Agregar</button></div>
+	<?php
+}
+function display_devel()
+{
+	?>
+			<input type="checkbox" name="devel_mode" value="1" <?php checked(1, get_option('devel_mode'), true); ?> /> 
 	<?php
 }
 function display_theme_panel_fields()
@@ -203,10 +211,17 @@ function display_theme_panel_fields()
 
     //Encuestas Menu
 
-    add_settings_section("section", "Nueva Encuesta", null, "encuestas-options");
- 	add_settings_field("encuesta_opciones", "Opciones:", "display_encuesta_opciones", "encuestas-options", "section");
+    add_settings_section("enc_sec", "Nueva Encuesta", null, "encuestas-options");
+ 	add_settings_field("encuesta_opciones", "Opciones:", "display_encuesta_opciones", "encuestas-options", "enc_sec");
 
-    register_setting("section", "encuesta_opciones");
+    register_setting("enc_sec", "encuesta_opciones");
+
+    //Developer Menu
+
+    add_settings_section("devel_sec", "Desarrollador", null, "devel-options");
+ 	add_settings_field("devel_mode", "Modo Desarrollador:", "display_devel", "devel-options", "devel_sec");
+
+    register_setting("devel_sec", "devel_mode");
 
 }
 
@@ -224,12 +239,23 @@ function theme_encuestas_page(){
 	 	<?php
 	 	}
 	}
- 	settings_fields("section");
+ 	settings_fields("enc_sec");
 	do_settings_sections("encuestas-options");
 	submit_button(); 
 	?>
 	</form>
 		<?php
+}
+function theme_devel(){
+	?>
+	<form method="post" action="options.php">
+	<?php
+ 	settings_fields("devel_sec");
+	do_settings_sections("devel-options");
+	submit_button(); 
+	?>
+	</form>
+	<?php
 }
 
 function theme_settings_page()
@@ -264,7 +290,7 @@ function remove_menus(){
   remove_menu_page( 'upload.php' );   
   remove_menu_page( 'edit-tags.php?taxonomy=post_tag' );
 }
-add_action( 'admin_menu', 'remove_menus' );
+
 
 
 
@@ -332,7 +358,6 @@ function guardar_metabox_autores( $post_id )
 function webriti_remove_admin_bar_links() {
 global $wp_admin_bar;
 
-//Remove WordPress Logo Menu Items
 $wp_admin_bar->remove_menu('wp-logo'); // Removes WP Logo and submenus completely, to remove individual items, use the below mentioned codes
 $wp_admin_bar->remove_menu('themes'); // 'Themes'
 $wp_admin_bar->remove_menu('widgets'); // 'Widgets'
@@ -347,13 +372,10 @@ $wp_admin_bar->remove_menu('updates');
 
 $wp_admin_bar->remove_menu('new-content'); // Removes '+ New' and submenus completely, to remove individual items, use the below mentioned codes
 
-
 // Remove 'Howdy, username' Menu Items
 $wp_admin_bar->remove_menu('user-info'); // 'username'
 $wp_admin_bar->remove_menu('edit-profile'); // 'Edit My Profile'
-
 }
-add_action( 'wp_before_admin_bar_render', 'webriti_remove_admin_bar_links' );
 
 
 function replace_howdy( $wp_admin_bar ) {
@@ -364,27 +386,41 @@ $wp_admin_bar->add_node( array(
 'title' => $newtitle,
 ) );
 }
-add_filter( 'admin_bar_menu', 'replace_howdy',25 );
+
 
 
 
 
 function webriti_toolbar_link($wp_admin_bar) {
-$args = array(
-'title' => 'Nueva Entrada',
-'href' => get_site_url().'/wp-admin/post-new.php'
-);
-$wp_admin_bar->add_node($args);
-$args = array(
-'title' => 'Nueva Pagina',
-'href' => get_site_url().'/wp-admin/post-new.php?post_type=page'
-);
-$wp_admin_bar->add_node($args);
-$args = array(
-'title' => 'Configurar Tema',
-'href' => get_site_url().'/wp-admin/admin.php?page=theme-panel'
-);
-$wp_admin_bar->add_node($args);
+	$args = array(
+	'title' => 'Nueva Entrada',
+	'href' => get_site_url().'/wp-admin/post-new.php'
+	);
+	if(current_user_can("edit_posts"))
+	$wp_admin_bar->add_node($args);
+
+
+	$args = array(
+	'title' => 'Nueva Pagina',
+	'href' => get_site_url().'/wp-admin/post-new.php?post_type=page'
+	);
+	if(current_user_can("edit_pages"))
+		$wp_admin_bar->add_node($args);
+	
+	$args = array(
+	'title' => 'Configurar Tema',
+	'href' => get_site_url().'/wp-admin/admin.php?page=theme-panel'
+	);
+	if(current_user_can("edit_theme_options"))
+		$wp_admin_bar->add_node($args);
 }
-add_action('admin_bar_menu', 'webriti_toolbar_link', 50);
+
+$devel_mode = get_option("devel_mode");
+if($devel_mode != "1"){
+	add_action( 'admin_menu', 'remove_menus' );
+	add_action( 'wp_before_admin_bar_render', 'webriti_remove_admin_bar_links' );
+	add_filter( 'admin_bar_menu', 'replace_howdy',25 );
+	add_action('admin_bar_menu', 'webriti_toolbar_link', 50);
+}
+
 ?>
