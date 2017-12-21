@@ -245,7 +245,8 @@ i.color {
     background: linear-gradient(to right, #49BEEE, #1956A0);
     color: #fff;
     font-size: 1.2em;
-    padding: .125em 1em;
+    padding: .25em 1em;
+    line-height: 20px;
 }
 
 .post .autor h4 {
@@ -275,7 +276,7 @@ i.color {
     max-width: 100%;
 }
 
-.post article p:first-child::first-letter {
+.post.capital article p:first-child::first-letter {
     float: left;
     font-weight: normal!important;
     color: black;
